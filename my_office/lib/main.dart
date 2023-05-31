@@ -1,127 +1,36 @@
-// @dart=2.9
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_office/feature2/screens/renter/main_screen.dart';
-import 'package:my_office/repositories/repositories.dart';
+import 'package:my_office/service/auth.dart';
+import 'package:my_office/feature/routes/routes.dart';
+import 'package:my_office/service/user_view_model.dart';
+import 'package:provider/provider.dart';
 
-import 'feature1/bloc/auth_bloc/auth.dart';
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
-}
-
-class SimpleBlocDelegate extends BlocDelegate {
-  @override
-  void onEvent(Bloc bloc, Object event) {
-    super.onEvent(bloc, event);
-    print(event);
-  }
-
-  @override
-  void onTransition(Bloc bloc, Transition transition) {
-    super.onTransition(bloc, transition);
-    print(transition);
-  }
-
-  @override
-  void onError(Bloc bloc, Object error, StackTrace stacktrace) {
-    super.onError(bloc, error, stacktrace);
-    print(error);
-  }
-}
+import 'feature/screens/owner/main_screen_owner.dart';
 
 void main() {
-  HttpOverrides.global = MyHttpOverrides();
-  BlocSupervisor.delegate = SimpleBlocDelegate();
-  final userRepository = UserRepository();
-  runApp(
-    BlocProvider<AuthenticationBloc>(
-      create: (context) {
-        return AuthenticationBloc(userRepository: userRepository)
-          ..add(AppStarted());
-      },
-      child: MyApp(userRepository: userRepository),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final UserRepository userRepository;
+  const MyApp({Key? key}) : super(key: key);
 
-  const MyApp({Key key, @required this.userRepository}) : super(key: key);
-
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      themeMode: ThemeMode.dark,
-      debugShowCheckedModeBanner: false,
-      locale: const Locale('mn', 'MN'),
-      theme: ThemeData(
-        fontFamily: 'Rubik',
-        // primarySwatch: AppColors.mainColor,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => UserViewModel()),
+      ],
+      child: MaterialApp(
+        onGenerateRoute: Routes.generateRoute,
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const MainScreenOwner(),
+        // initialRoute: RoutesName.splash,
       ),
-      home: const MainScreen(),
-      // home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      //   builder: (context, state) {
-      //     if (state is AuthenticationAuthenticated) {
-      //       return const MainScreen();
-      //     }
-      //     if (state is AuthenticationUnauthenticated) {
-      //       return IntroPage(userRepository: userRepository);
-      //     }
-      //     if (state is AuthenticationLoading) {
-      //       return Scaffold(
-      //         body: Container(
-      //           color: Colors.white,
-      //           width: MediaQuery.of(context).size.width,
-      //           child: Column(
-      //             crossAxisAlignment: CrossAxisAlignment.center,
-      //             mainAxisAlignment: MainAxisAlignment.center,
-      //             children: const <Widget>[
-      //               SizedBox(
-      //                 height: 25.0,
-      //                 width: 25.0,
-      //                 child: CircularProgressIndicator(
-      //                   valueColor: AlwaysStoppedAnimation<Color>(
-      //                       Style.Colors.mainColor),
-      //                   strokeWidth: 4.0,
-      //                 ),
-      //               )
-      //             ],
-      //           ),
-      //         ),
-      //       );
-      //     }
-      //     return Scaffold(
-      //       body: Container(
-      //         color: Colors.white,
-      //         width: MediaQuery.of(context).size.width,
-      //         child: Column(
-      //           crossAxisAlignment: CrossAxisAlignment.center,
-      //           mainAxisAlignment: MainAxisAlignment.center,
-      //           children: const <Widget>[
-      //             SizedBox(
-      //               height: 25.0,
-      //               width: 25.0,
-      //               child: CircularProgressIndicator(
-      //                 valueColor:
-      //                     AlwaysStoppedAnimation<Color>(Style.Colors.mainColor),
-      //                 strokeWidth: 4.0,
-      //               ),
-      //             )
-      //           ],
-      //         ),
-      //       ),
-      //     );
-      //   },
-      // ),
     );
   }
 }

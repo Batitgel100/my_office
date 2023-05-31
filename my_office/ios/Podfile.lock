@@ -1,28 +1,82 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_secure_storage (6.0.0):
+  - fluttertoast (0.0.2):
     - Flutter
-  - url_launcher_ios (0.0.1):
+    - Toast
+  - image_picker_ios (0.0.1):
     - Flutter
+  - NWWebSocket (0.5.2)
+  - pusher_channels_flutter (0.0.1):
+    - Flutter
+    - PusherSwift (~> 10.1.1)
+  - pusher_client (2.0.0):
+    - Flutter
+    - PusherSwiftWithEncryption (~> 8.0.0)
+  - PusherSwift (10.1.2):
+    - NWWebSocket (~> 0.5.2)
+    - TweetNacl (~> 1.0.0)
+  - PusherSwiftWithEncryption (8.0.0):
+    - ReachabilitySwift (~> 5.0)
+    - Sodium (= 0.8.0)
+    - Starscream (~> 3.1)
+  - ReachabilitySwift (5.0.0)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - Sodium (0.8.0)
+  - Starscream (3.1.1)
+  - Toast (4.0.0)
+  - TweetNacl (1.0.2)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
-  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - pusher_channels_flutter (from `.symlinks/plugins/pusher_channels_flutter/ios`)
+  - pusher_client (from `.symlinks/plugins/pusher_client/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+
+SPEC REPOS:
+  trunk:
+    - NWWebSocket
+    - PusherSwift
+    - PusherSwiftWithEncryption
+    - ReachabilitySwift
+    - Sodium
+    - Starscream
+    - Toast
+    - TweetNacl
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  flutter_secure_storage:
-    :path: ".symlinks/plugins/flutter_secure_storage/ios"
-  url_launcher_ios:
-    :path: ".symlinks/plugins/url_launcher_ios/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
+  pusher_channels_flutter:
+    :path: ".symlinks/plugins/pusher_channels_flutter/ios"
+  pusher_client:
+    :path: ".symlinks/plugins/pusher_client/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
-  url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
+  fluttertoast: fafc4fa4d01a6a9e4f772ecd190ffa525e9e2d9c
+  image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
+  NWWebSocket: 21f0c73639815da3272862c912275b26102aa80c
+  pusher_channels_flutter: bf646336659d2cc058c62346b4b9e8b82e37b71b
+  pusher_client: ffcefc0aeeb910ef85e82c9bb333146adad0d8ce
+  PusherSwift: fb30ba1dcbe09a6ca257ccb39dc2f84866e811b4
+  PusherSwiftWithEncryption: e8626abf1067a7e1b06afde720934fe1872498e3
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
+  shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
+  Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
+  Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
+  TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
 
-PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
+PODFILE CHECKSUM: c18996a1973935e8fa6635f10f9b85f559aa6475
 
 COCOAPODS: 1.11.3
