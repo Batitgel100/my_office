@@ -49,7 +49,10 @@ class _DashboardScreenOwnerState extends State<DashboardScreenOwner> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('Хянах самбар'),
+          title: const Text(
+            'Хянах самбар',
+            style: TextStyles.white17,
+          ),
           backgroundColor: AppColors.mainColor,
           actions: [
             Padding(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_office/feature/screens/owner/main_screen_owner.dart';
+import 'package:my_office/feature/screens/renter/main_screen.dart';
 import 'package:my_office/service/auth.dart';
 import 'package:my_office/feature/routes/routes.dart';
 import 'package:my_office/service/user_view_model.dart';
 import 'package:provider/provider.dart';
-
-import 'feature/screens/owner/main_screen_owner.dart';
 
 void main() {
   runApp(const MyApp());

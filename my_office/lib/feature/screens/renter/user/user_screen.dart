@@ -17,7 +17,21 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreenState extends State<UserScreen> {
   UserRepository repository = UserRepository();
+  @override
+  void initState() {
+    // repository.updatePage(firstNameController.text, lastname, phone, email, register, address, password, image),
+    super.initState();
+  }
+
   final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+  final adressController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final registerController = TextEditingController();
+
+  bool imageEmpty = true;
   Future<void> _logout() async {
     // Clear any stored user data here
     // For example, you can use shared preferences to store the user data and clear it on logout
@@ -39,49 +53,47 @@ class _UserScreenState extends State<UserScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.mainColor,
-        title: const Text('Хэрэглэгчийн хуудас'),
+        title: const Text(
+          'Хэрэглэгчийн хуудас',
+          style: TextStyles.white17,
+        ),
       ),
       body: Center(
         child: FutureBuilder(
           future: http.get(Uri.parse(
-              'https://ub-office.mn/mobile/login?gmail=worldnet@gmail.com&password=12345678')),
+              'https://ub-office.mn/mobile/login?gmail=worldnet@mail.com&password=12345678')),
           builder:
               (BuildContext context, AsyncSnapshot<http.Response> snapshot) {
             if (snapshot.hasData) {
               Map<String, dynamic> data = json.decode(snapshot.data!.body);
-              String firstName = data['data']['firstname'];
+              String firstName = data['data']['firstname'].toString();
               String phone = data['data']['phone'];
               String register = data['data']['register'];
+
+              if (data['data']['image_url'] == null) {
+                imageEmpty = true;
+              } else {
+                imageEmpty = false;
+              }
+
               return SizedBox(
                 width: MediaQuery.of(context).size.width * 0.92,
                 child: Column(
                   children: [
+                    imageEmpty
+                        ? const SizedBox()
+                        : Text(
+                            '${data['data']['image_url']}',
+                          ),
+                    // Image.network(
+                    //     '${data['data']['image_url']}',
+                    //   ),
                     const SizedBox(
                       height: 30,
                     ),
                     CustomUserButton(
                       text: firstName,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => MyWidget(
-                              controller: firstNameController,
-                              onTap: () async {
-                                bool response = await repository.updatePage(
-                                  firstNameController.text,
-                                );
-                                if (response) {
-                                  Navigator.pop(context);
-                                } else {
-                                  print(response);
-                                  // throw Exception('fail sda');
-                                }
-                              },
-                            ),
-                          ),
-                        );
-                      },
+                      onTap: () {},
                       radius: const BorderRadius.only(
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12),
@@ -94,7 +106,7 @@ class _UserScreenState extends State<UserScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(4.0),
                           child: Icon(
                             Icons.edit,
                             color: Color.fromARGB(255, 255, 255, 255),
@@ -118,7 +130,7 @@ class _UserScreenState extends State<UserScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(4.0),
                           child: Icon(
                             Icons.edit,
                             color: Color.fromARGB(255, 255, 255, 255),
@@ -142,7 +154,7 @@ class _UserScreenState extends State<UserScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(4.0),
                           child: Icon(
                             Icons.edit,
                             color: Color.fromARGB(255, 255, 255, 255),
@@ -166,7 +178,7 @@ class _UserScreenState extends State<UserScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(4.0),
                           child: Icon(
                             Icons.edit,
                             color: Color.fromARGB(255, 255, 255, 255),
@@ -198,23 +210,100 @@ class _UserScreenState extends State<UserScreen> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 100.0, vertical: 30),
-                      child: InkWell(
-                          onTap: _logout,
-                          child: Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color:
-                                      const Color.fromARGB(255, 243, 123, 115),
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: const Center(
-                                child: Text(
-                                  'Гарах',
-                                  style: TextStyle(color: Colors.white),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => MyWidget(
+                                    emailController: emailController,
+                                    passwordController: passwordController,
+                                    firstNameController: firstNameController,
+                                    lastNameController: lastNameController,
+                                    phoneController: phoneNumberController,
+                                    registerController: registerController,
+                                    adressController: adressController,
+                                    onTap: () async {
+                                      bool response =
+                                          await repository.updatePage(
+                                        firstNameController.text,
+                                        lastNameController.text,
+                                        phoneNumberController.text,
+                                        emailController.text,
+                                        registerController.text,
+                                        adressController.text,
+                                        passwordController.text,
+                                        // 'assets/images/3.png' as Image,
+                                      );
+                                      if (response) {
+                                        Navigator.pop(context);
+                                        Globals.changeFirstName(
+                                            firstNameController.text);
+                                        Globals.changeAddress(
+                                          adressController.text,
+                                        );
+                                        Globals.changeGmail(
+                                          emailController.text,
+                                        );
+                                        Globals.changeUserPhone(
+                                          phoneNumberController.text,
+                                        );
+                                        Globals.changeRegister(
+                                          registerController.text,
+                                        );
+                                        Globals.changeLastName(
+                                          lastNameController.text,
+                                        );
+                                        setState(() {});
+                                      } else {
+                                        print(response);
+                                        // throw Exception('fail sda');
+                                      }
+                                    },
+                                  ),
                                 ),
-                              ))),
+                              );
+                            },
+                            child: Container(
+                                width: MediaQuery.of(context).size.width * 0.45,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: AppColors.mainColor,
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: const Center(
+                                  child: Text(
+                                    'Мэдээлэл засах',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18),
+                                  ),
+                                ))),
+                        InkWell(
+                            onTap: _logout,
+                            child: Container(
+                                width: MediaQuery.of(context).size.width * 0.45,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: const Color.fromARGB(
+                                        255, 243, 123, 115),
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: const Center(
+                                  child: Text(
+                                    'Гарах',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18),
+                                  ),
+                                ))),
+                      ],
                     )
                   ],
                 ),
@@ -235,21 +324,65 @@ class _UserScreenState extends State<UserScreen> {
 }
 
 class MyWidget extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final TextEditingController lastNameController;
+  final TextEditingController firstNameController;
+  final TextEditingController adressController;
+  final TextEditingController registerController;
+  final TextEditingController phoneController;
   final VoidCallback onTap;
 
-  const MyWidget({super.key, required this.controller, required this.onTap});
+  const MyWidget(
+      {super.key,
+      required this.onTap,
+      required this.emailController,
+      required this.passwordController,
+      required this.lastNameController,
+      required this.firstNameController,
+      required this.adressController,
+      required this.registerController,
+      required this.phoneController});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextField(
-            controller: controller,
+            controller: firstNameController,
+            decoration: InputDecoration(hintText: '${Globals.firstname}'),
           ),
-          ElevatedButton(onPressed: onTap, child: const Text('submit'))
+          TextField(
+            controller: lastNameController,
+            decoration: InputDecoration(hintText: '${Globals.lastname}'),
+          ),
+          TextField(
+            controller: registerController,
+            decoration: InputDecoration(hintText: '${Globals.register}'),
+          ),
+          TextField(
+            controller: emailController,
+            decoration: InputDecoration(hintText: '${Globals.gmail}'),
+          ),
+          TextField(
+            controller: phoneController,
+            decoration: InputDecoration(hintText: '${Globals.phone}'),
+          ),
+          TextField(
+            controller: adressController,
+            decoration: InputDecoration(hintText: '${Globals.address}'),
+          ),
+          TextFormField(
+            controller: passwordController,
+            decoration: const InputDecoration(hintText: 'нууц үг'),
+          ),
+          ElevatedButton(
+            onPressed: onTap,
+            child: const Text('submit'),
+          )
         ],
       ),
     );
@@ -316,7 +449,7 @@ class _CustomUserButtonState extends State<CustomUserButton> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      padding: const EdgeInsets.only(left: 10.0, right: 5),
                       child: Icon(
                         widget.icon,
                         color: const Color.fromARGB(255, 72, 72, 72),
@@ -324,33 +457,24 @@ class _CustomUserButtonState extends State<CustomUserButton> {
                     ),
                     Text(
                       widget.title,
-                      style: TextStyles.black14,
+                      style: TextStyles.black13,
                     ),
                   ],
                 ),
               ),
               Expanded(
-                flex: 8,
+                flex: 7,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 5.0),
+                      padding: const EdgeInsets.only(right: 15.0),
                       child: Text(
                         widget.text,
-                        style: TextStyles.black14,
+                        style: TextStyles.black13,
                       ),
                     ),
                   ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InkWell(
-                  onTap: () {},
-                  child: Ink(
-                    child: Center(child: widget.seconIcon),
-                  ),
                 ),
               ),
             ],

@@ -115,9 +115,22 @@ class TextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
+  static const TextStyle grey12semibold = TextStyle(
+    color: Color.fromARGB(255, 114, 114, 114),
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+  );
   static const TextStyle black14 = TextStyle(
     color: Colors.black,
     fontSize: 14,
+  );
+  static const TextStyle black13 = TextStyle(
+    color: Colors.black,
+    fontSize: 13,
+  );
+  static const TextStyle black12 = TextStyle(
+    color: Colors.black,
+    fontSize: 12,
   );
   static const TextStyle black16semibold = TextStyle(
     color: Colors.black,

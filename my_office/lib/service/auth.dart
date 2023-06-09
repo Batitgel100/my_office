@@ -75,18 +75,40 @@ class AuthViewModel with ChangeNotifier {
 
         var inFirstname = '';
 
-        // if (value['data']['email'] != null) {
-        //   isEmpty = true;
-        //   inGmail = value['data']['email'];
-        // }
-
+        var inLastname = '';
+        var inPhoneNumber = '';
+        var inRegister = '';
+        var inEmail = '';
+        var inAddress = '';
         if (value['data']['firstname'] != null) {
           inFirstname = value['data']['firstname'];
+        }
+        if (value['data']['lastname'] != null) {
+          inLastname = value['data']['lastname'];
+        }
+        if (value['data']['phone'] != null) {
+          inPhoneNumber = value['data']['phone'];
+        }
+        if (value['data']['firstname'] != null) {
+          inAddress = value['data']['address'];
+        }
+        if (value['data']['register'] != null) {
+          inRegister = value['data']['register'];
+        }
+        if (value['data']['email'] != null) {
+          inEmail = value['data']['email'];
+        } else {
+          inEmail = 'емайл оруулаагүй';
         }
 
         // Globals.changeGmail(inGmail);
 
         Globals.changeFirstName(inFirstname);
+        Globals.changeAddress(inAddress);
+        Globals.changeGmail(inEmail);
+        Globals.changeUserPhone(inPhoneNumber);
+        Globals.changeRegister(inRegister);
+        Globals.changeLastName(inLastname);
 
         setLoading(false);
 

@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_office/feature/constants/theme.dart';
+import 'package:my_office/service/repositories.dart';
 
 bool isLoad = true;
 
@@ -17,11 +16,16 @@ class SelectedRoom extends StatefulWidget {
 
 class _SelectedRoomState extends State<SelectedRoom> {
   List<XFile> selectedImages = []; // List to store the selected images
+  late ImageRepository repository;
+  List<Map<String, dynamic>> _images = [];
+  bool _isLoading = false;
 
   Future<void> pickImages() async {
     List<XFile>? selectedFiles = await ImagePicker().pickMultiImage();
     setState(() {
       selectedImages = selectedFiles;
+      repository = ImageRepository();
+      fetchImages();
     });
   }
 
@@ -29,10 +33,31 @@ class _SelectedRoomState extends State<SelectedRoom> {
 
   @override
   void initState() {
+    repository = ImageRepository();
+    fetchImages();
     super.initState();
     // _getData();
   }
 
+  Future<void> fetchImages() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      List<Map<String, dynamic>> images = await repository.fetchImages();
+      setState(() {
+        _images = images;
+      });
+    } catch (e) {
+      print('Error: $e');
+      // Handle the exception or display an error message
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
   // Future<void> _getData() async {
   //   final response =
   //       await http.get(Uri.parse('https://fakestoreapi.com/products'));
@@ -69,10 +94,10 @@ class _SelectedRoomState extends State<SelectedRoom> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Өрөөний мэдээлэл', style: TextStyles.black20),
+                    Text('Өрөөний мэдээлэл', style: TextStyles.black17),
                     Text(
                       'Дэлгэрэнгүй',
-                      style: TextStyle(color: Colors.blue, fontSize: 15),
+                      style: TextStyle(color: Colors.blue, fontSize: 14),
                     ),
                   ],
                 ),
@@ -123,7 +148,7 @@ class _SelectedRoomState extends State<SelectedRoom> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Зургууд', style: TextStyles.black20),
+                    Text('Зургууд', style: TextStyles.black17),
                   ],
                 ),
               ),
@@ -151,139 +176,156 @@ class _SelectedRoomState extends State<SelectedRoom> {
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height * 0.7,
                           width: MediaQuery.of(context).size.width * 0.955,
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            itemCount: 5,
-                            itemBuilder: (BuildContext context, int index) {
-                              final isFirstItem = index == 0;
-                              return Padding(
-                                padding: const EdgeInsets.all(0.0),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.14,
-                                      width:
-                                          MediaQuery.of(context).size.width * 1,
-                                      decoration: BoxDecoration(
-                                        // border: Border.all(
-                                        //     width: 0, color: AppColors.mainColor),
-                                        borderRadius: isFirstItem
-                                            ? const BorderRadius.only(
-                                                topLeft: Radius.circular(12),
-                                                topRight: Radius.circular(12))
-                                            : null,
-                                        color: const Color.fromARGB(
-                                            255, 255, 255, 255),
-                                      ),
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: Row(
-                                          children: [
-                                            const Expanded(
-                                              flex: 3,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                          child: _isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : ListView.builder(
+                                  itemCount: _images.length,
+                                  itemBuilder: (context, index) {
+                                    final isFirstItem = index == 0;
+                                    final image = _images[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.15,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                1,
+                                            decoration: BoxDecoration(
+                                              // border: Border.all(
+                                              //     width: 0, color: AppColors.mainColor),
+                                              borderRadius: isFirstItem
+                                                  ? const BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(12),
+                                                      topRight:
+                                                          Radius.circular(12))
+                                                  : null,
+                                              color: const Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Row(
                                                 children: [
-                                                  Text('Ширээ',
-                                                      style:
-                                                          TextStyles.black17),
-                                                  Text('Төрөл : эд зүйл'),
-                                                  Text('Тоо ширхэг : 5'),
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 6,
-                                              child: ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemCount:
-                                                    selectedImages.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
-                                                      ),
-                                                      child: Image.file(File(
-                                                          selectedImages[index]
-                                                              .path)),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(image['name'],
+                                                            style: TextStyles
+                                                                .black14semibold),
+                                                        Text(
+                                                            'Төрөл : ${image['description']}'),
+                                                        Text(
+                                                            'Тоо ширхэг : ${image['quantity']}'),
+                                                      ],
                                                     ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            Expanded(
-                                              flex: 2,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 10.0),
-                                                child: InkWell(
-                                                  onTap: pickImages,
-                                                  child: Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.08,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      color: AppColors.greyBack,
+                                                  ),
+                                                  Expanded(
+                                                    flex: 4,
+                                                    child: ListView.builder(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      itemCount: image.length,
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int index) {
+                                                        return Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                            ),
+                                                            child: Image.network(
+                                                                'https://ub-office.mn/${image['url']}'),
+                                                          ),
+                                                        );
+                                                      },
                                                     ),
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        Icons.add,
-                                                        size: 35,
-                                                        color: Colors.black,
+                                                  ),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 10.0),
+                                                      child: InkWell(
+                                                        onTap: pickImages,
+                                                        child: Container(
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              0.08,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
+                                                            color: AppColors
+                                                                .greyBack,
+                                                          ),
+                                                          child: const Center(
+                                                            child: Icon(
+                                                              Icons.add,
+                                                              size: 35,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
+                                                ],
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  height: 0.4,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 4,
+                                                child: Container(
+                                                  height: 0.4,
+                                                  color: AppColors.mainColor,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
                                       ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            height: 0.4,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Container(
-                                            height: 0.4,
-                                            color: AppColors.mainColor,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
                         ),
                       ),
                     ],
@@ -311,7 +353,7 @@ class SelectedRoomAppBar extends StatelessWidget {
     return AppBar(
       title: Text(
         widget.barTitle,
-        style: TextStyles.white22semibold,
+        style: TextStyles.white17,
       ),
       backgroundColor: AppColors.mainColor,
       elevation: 0,

@@ -1,100 +1,200 @@
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-// class FilteredList extends StatefulWidget {
-//   @override
-//   _FilteredListState createState() => _FilteredListState();
-// }
+class TestUploadImage extends StatefulWidget {
+  const TestUploadImage({super.key});
 
-// class _FilteredListState extends State<FilteredList> {
-//   List<String> items = []; // List to store all items
-//   List<String> filteredItems = []; // List to store filtered items
-//   late String selectedFilter; // Currently selected filter
+  @override
+  State<TestUploadImage> createState() => _TestUploadImageState();
+}
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     fetchData(); // Call the function to fetch data
-//   }
+class _TestUploadImageState extends State<TestUploadImage> {
+  File? image;
+  bool showSpinner = false;
+  final picker = ImagePicker();
+  Future getImage() async {
+    final pickedFile =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if (pickedFile != null) {
+      image = File(pickedFile.path);
+      setState(() {});
+      print(image!.path);
+    } else {
+      print('no image selected');
+    }
+  }
 
-//   Future<void> fetchData() async {
-//     // Make the HTTP request to fetch data from the server
-//     final response = await http.get(Uri.parse('your_api_url'));
+  // Future<void> uploadImage() async {
+  //   setState(() {
+  //     showSpinner = true;
+  //   });
 
-//     if (response.statusCode == 200) {
-//       // Parse the response data into a list of items
-//       final data = jsonDecode(response.body);
-//       items = List<String>.from(data);
+  //   var stream = http.ByteStream(image!.openRead());
+  //   stream.cast();
+  //   var length = await image!.length();
 
-//       // Set the initial filtered items list to all items
-//       filteredItems = List<String>.from(items);
+  //   var uri = Uri.parse('https://ub-office.mn/mobile/profile/edit/9');
+  //   var request = http.MultipartRequest('PUT', uri);
 
-//       setState(() {});
-//     } else {
-//       throw Exception('Failed to fetch data');
-//     }
-//   }
+  //   request.fields['firstname'] = 'Worldnet';
+  //   request.fields['lastname'] = 'lastname';
+  //   request.fields['address'] = 'union';
+  //   request.fields['phone'] = '99999999';
+  //   request.fields['register'] = '12345678';
+  //   request.fields['email'] = 'worldnet@gmail.com';
+  //   request.fields['password'] = '12345678';
 
-//   void filterItems(String filter) {
-//     // Filter the items based on the selected filter
-//     if (filter == 'Filter 1') {
-//       filteredItems = items.where((item) => /* Apply your filter condition */).toList();
-//     } else if (filter == 'Filter 2') {
-//       filteredItems = items.where((item) => /* Apply your filter condition */).toList();
-//     } else {
-//       // If no filter is selected, show all items
-//       filteredItems = List<String>.from(items);
-//     }
+  //   var multipartFile = http.MultipartFile('file0', stream, length);
+  //   request.files.add(multipartFile);
 
-//     setState(() {});
-//   }
+  //   var response = await request.send();
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Filtered List'),
-//       ),
-//       body: Column(
-//         children: [
-//           DropdownButton<String>(
-//             value: selectedFilter,
-//             onChanged: (String? value) {
-//               setState(() {
-//                 selectedFilter = value!;
-//                 filterItems(selectedFilter);
-//               });
-//             },
-//             items: <String>[
-//               'Filter 1',
-//               'Filter 2',
-//               'All',
-//             ].map<DropdownMenuItem<String>>((String value) {
-//               return DropdownMenuItem<String>(
-//                 value: value,
-//                 child: Text(value),
-//               );
-//             }).toList(),
-//           ),
-//           Expanded(
-//             child: ListView.builder(
-//               itemCount: filteredItems.length,
-//               itemBuilder: (BuildContext context, int index) {
-//                 return ListTile(
-//                   title: Text(filteredItems[index]),
-//                 );
-//               },
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       showSpinner = false;
+  //     });
+  //     print('nice');
+  //   } else {
+  //     setState(() {
+  //       showSpinner = false;
+  //     });
+  //     print('sda');
+  //   }
+  // }
+  // Future<void> updateUser(String? image) async {
+  //   // Create a map with the updated data
+  //   Map<String, dynamic> userData = {
+  //     'firstname': 'Worldnet',
+  //     'lastname': 'lastname',
+  //     'address': 'union',
+  //     'phone': '99999999',
+  //     'register': '12345678',
+  //     'email': 'worldnet@gmail.com',
+  //     'password': '12345678',
+  //     'file0': image,
+  //   };
 
-// void main() {
-//   runApp(MaterialApp(
-//     home: FilteredList(),
-//   ));
-// }
+  //   // Convert the map to JSON
+  //   String jsonData = jsonEncode(userData);
+
+  //   try {
+  //     // Make the PUT request
+  //     final response = await http.put(
+  //       Uri.parse('https://ub-office.mn/mobile/profile/edit/9'),
+  //       body: jsonData,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     );
+  //     print(response.body);
+  //     // Check the response status code
+  //     if (response.statusCode == 200) {
+  //       print('User updated successfully');
+  //     } else {
+  //       print('Failed to update user. Status code: ${response.statusCode}');
+  //     }
+  //   } catch (error) {
+  //     print('Error: $error');
+  //   }
+  // }
+  Future<void> updateUser(
+    // String url,
+    String firstname,
+    String lastname,
+    String address,
+    String phone,
+    String register,
+    String email,
+    String password,
+  ) async {
+    // Pick an image using ImagePicker
+    final picker = ImagePicker();
+    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+
+    // Convert the picked image to base64-encoded string
+    List<int> imageBytes = await pickedImage!.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+
+    // Create a map with the updated data
+    Map<String, dynamic> userData = {
+      'firstname': firstname,
+      'lastname': lastname,
+      'address': address,
+      'phone': phone,
+      'register': register,
+      'email': email,
+      'password': password,
+      'image': base64Image,
+    };
+
+    // Convert the map to JSON
+    String jsonData = jsonEncode(userData);
+
+    try {
+      // Make the PUT request
+      final response = await http.put(
+        Uri.parse('https://ub-office.mn/mobile/profile/edit/9'),
+        body: jsonData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      // Check the response status code
+      if (response.statusCode == 200) {
+        print('User updated successfully');
+      } else {
+        print('Failed to update user. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ModalProgressHUD(
+      inAsyncCall: showSpinner,
+      child: Scaffold(
+        body: Container(
+          child: Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              image == null
+                  ? ElevatedButton(
+                      onPressed: () {
+                        getImage();
+                      },
+                      child: const Text('pick'),
+                    )
+                  : Center(
+                      child: Image.file(
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.cover,
+                        File(image!.path).absolute,
+                      ),
+                    ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // uploadImage();
+                  updateUser('Worldnet', 'lastname', 'union', '99999999',
+                      '12345678', 'worldnet@gmail.com', '12345678');
+                },
+                child: const Text('upload'),
+              ),
+            ],
+          )),
+        ),
+      ),
+    );
+  }
+}

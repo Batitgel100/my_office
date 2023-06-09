@@ -25,8 +25,8 @@ class _MyRoomScreenState extends State<MyRoomScreen> {
   // final double _opacity = 1.0;
   bool isLoading = true;
   List<dynamic> _data = [];
-  List<dynamic> _filteredData = [];
-  String _filterValue = "бүх барилга";
+  List<dynamic> roomList = [];
+  final String _filterValue = "бүх барилга";
 
   Future<String> getData() async {
     var response =
@@ -35,7 +35,7 @@ class _MyRoomScreenState extends State<MyRoomScreen> {
       setState(() {
         var data = json.decode(response.body);
         _data = data;
-        _filteredData = data;
+        roomList = data;
       });
     }
 
@@ -47,19 +47,6 @@ class _MyRoomScreenState extends State<MyRoomScreen> {
       }
     }
     return "Success!";
-  }
-
-  void _filterData(String value) {
-    List<dynamic> tempList = [];
-    for (int i = 0; i < _data.length; i++) {
-      if (value == "бүх барилга" || _data[i]['building_name'] == value) {
-        tempList.add(_data[i]);
-      }
-    }
-    setState(() {
-      _filterValue = value;
-      _filteredData = tempList;
-    });
   }
 
   @override
@@ -79,9 +66,11 @@ class _MyRoomScreenState extends State<MyRoomScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: AppColors.mainColor,
         title: const Text(
           'Миний өрөөнүүд',
+          style: TextStyles.white17,
         ),
       ),
       body: isLoading
@@ -100,78 +89,6 @@ class _MyRoomScreenState extends State<MyRoomScreen> {
                       flex: 1,
                       child: Container(
                         decoration: const BoxDecoration(color: Colors.white),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Row(
-                            children: [
-                              Container(
-                                height: 50,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color.fromARGB(137, 158, 158, 158),
-                                      blurRadius: 5.0,
-                                      spreadRadius: 1,
-                                      offset: Offset(
-                                        0.0, // Move to right 7.0 horizontally
-                                        1.0, // Move to bottom 8.0 Vertically
-                                      ),
-                                    ),
-                                  ],
-                                  // border: Border.all(width: 0.5, color: AppColors.grey),
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const DropdownButtonExample(),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Container(
-                                  height: 50,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.5,
-                                  decoration: BoxDecoration(
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color:
-                                            Color.fromARGB(137, 158, 158, 158),
-                                        blurRadius: 5.0,
-                                        spreadRadius: 1,
-                                        offset: Offset(
-                                          0.0, // Move to right 7.0 horizontally
-                                          1.0, // Move to bottom 8.0 Vertically
-                                        ),
-                                      ),
-                                    ],
-                                    // border: Border.all(width: 0.5, color: AppColors.grey),
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Center(
-                                    child: DropdownButton<String>(
-                                      underline: Container(),
-                                      value: _filterValue,
-                                      onChanged: (String? value) {
-                                        _filterData(value.toString());
-                                      },
-                                      items: <String>[
-                                        'бүх барилга',
-                                        'Union building',
-                                      ].map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
                     ),
                   ),
@@ -183,14 +100,14 @@ class _MyRoomScreenState extends State<MyRoomScreen> {
                   child: ListView.builder(
                     controller: scrollController,
                     // padding: const EdgeInsets.all(4),
-                    itemCount: _filteredData.length,
+                    itemCount: roomList.length,
                     itemBuilder: (BuildContext context, int index) {
                       // RoomModel room = listRoom[index];
 
                       Color textColor = AppColors.mainColor; // default color
-                      if (_filteredData[index]['door_number'] == null) {
+                      if (roomList[index]['door_number'] == null) {
                         textColor = AppColors.mainColor;
-                      } else if (_filteredData[index]['door_number'] == '') {
+                      } else if (roomList[index]['door_number'] == '') {
                         textColor = const Color.fromARGB(255, 243, 100, 90);
                       } else {
                         textColor = const Color.fromARGB(255, 243, 100, 90);
@@ -205,13 +122,12 @@ class _MyRoomScreenState extends State<MyRoomScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => SelectedRoom(
-                                    roomId: _filteredData[index]['room_id']
-                                        .toString(),
-                                    barTitle: _filteredData[index]
-                                                ['door_number'] !=
+                                    roomId:
+                                        roomList[index]['room_id'].toString(),
+                                    barTitle: roomList[index]['door_number'] !=
                                             null
-                                        ? '${_filteredData[index]['door_number']}, ${_filteredData[index]['building_name']}'
-                                        : '804, ${_filteredData[index]['building_name']}'),
+                                        ? '${roomList[index]['door_number']}, ${roomList[index]['building_name']}'
+                                        : '804, ${roomList[index]['building_name']}'),
                               ),
                             );
                           },
@@ -260,10 +176,9 @@ class _MyRoomScreenState extends State<MyRoomScreen> {
                                           ),
                                           child: Center(
                                             child: Text(
-                                              _filteredData[index]
-                                                          ['door_number'] !=
+                                              roomList[index]['door_number'] !=
                                                       null
-                                                  ? _filteredData[index]
+                                                  ? roomList[index]
                                                           ['door_number']
                                                       .toString()
                                                   : '',
@@ -275,7 +190,7 @@ class _MyRoomScreenState extends State<MyRoomScreen> {
                                           width: 10,
                                         ),
                                         Text(
-                                          _filteredData[index]['building_name']
+                                          roomList[index]['building_name']
                                               .toString(),
                                           style: TextStyles.black17semibold,
                                         ),
@@ -294,19 +209,19 @@ class _MyRoomScreenState extends State<MyRoomScreen> {
                                           children: [
                                             Text(
                                               'Давхар : 8',
-                                              style: TextStyles.grey14semibold,
+                                              style: TextStyles.grey12semibold,
                                             ),
                                             Text(
                                               'Давхар : 8',
-                                              style: TextStyles.grey14semibold,
+                                              style: TextStyles.grey12semibold,
                                             ),
                                             Text(
                                               'Давхар : 8',
-                                              style: TextStyles.grey14semibold,
+                                              style: TextStyles.grey12semibold,
                                             ),
                                             Text(
                                               'Давхар : 8',
-                                              style: TextStyles.grey14semibold,
+                                              style: TextStyles.grey12semibold,
                                             ),
                                           ],
                                         ),

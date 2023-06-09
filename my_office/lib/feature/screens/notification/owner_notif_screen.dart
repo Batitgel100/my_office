@@ -35,7 +35,7 @@ class _NotificationScreenOwnerState extends State<NotificationScreenOwner> {
             ),
             title: const Text(
               'Мэдэгдэл',
-              style: TextStyles.black20,
+              style: TextStyles.black17,
             ),
             backgroundColor: AppColors.white,
             bottom: const TabBar(
@@ -43,7 +43,7 @@ class _NotificationScreenOwnerState extends State<NotificationScreenOwner> {
               indicatorColor: AppColors.mainColor,
               indicatorWeight: 5.0,
               labelColor: AppColors.mainColor,
-              labelPadding: EdgeInsets.only(top: 10.0),
+              labelPadding: EdgeInsets.only(top: 0.0),
               unselectedLabelColor: Colors.grey,
               tabs: [
                 Tab(
@@ -124,7 +124,7 @@ class _NotificationScreenOwnerState extends State<NotificationScreenOwner> {
                                               style: TextStyles.black17semibold,
                                             ),
                                             SizedBox(
-                                              height: 20,
+                                              height: 15,
                                             ),
                                             Text(
                                               'Өдрийн мэнд. Та гэрээгээ сунгах бол манай байгууллагатай холбогдоно уу?',

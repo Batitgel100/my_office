@@ -12,9 +12,10 @@ class ChatScreenUI extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Зурвас',
-          style: TextStyles.white22semibold,
+          style: TextStyles.white17,
         ),
         elevation: 0,
         backgroundColor: AppColors.mainColor,
