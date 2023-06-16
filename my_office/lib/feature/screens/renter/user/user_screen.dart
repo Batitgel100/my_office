@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:my_office/feature/constants/theme.dart';
 import 'package:my_office/feature/public/globals.dart';
 import 'package:my_office/feature/screens/login/loginpage.dart';
-import 'package:my_office/service/user_reposiroty.dart';
+import 'package:my_office/feature/screens/renter/user/user_edit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  UserRepository repository = UserRepository();
+  // UserRepository repository = UserRepository();
   @override
   void initState() {
     // repository.updatePage(firstNameController.text, lastname, phone, email, register, address, password, image),
@@ -61,7 +61,7 @@ class _UserScreenState extends State<UserScreen> {
       body: Center(
         child: FutureBuilder(
           future: http.get(Uri.parse(
-              'https://ub-office.mn/mobile/login?gmail=worldnet@mail.com&password=12345678')),
+              'https://ub-office.mn/mobile/login?gmail=${Globals.gmail}&password=${Globals.password}')),
           builder:
               (BuildContext context, AsyncSnapshot<http.Response> snapshot) {
             if (snapshot.hasData) {
@@ -80,14 +80,24 @@ class _UserScreenState extends State<UserScreen> {
                 width: MediaQuery.of(context).size.width * 0.92,
                 child: Column(
                   children: [
-                    imageEmpty
-                        ? const SizedBox()
-                        : Text(
-                            '${data['data']['image_url']}',
-                          ),
-                    // Image.network(
-                    //     '${data['data']['image_url']}',
-                    //   ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    if (imageEmpty)
+                      const SizedBox()
+                    else
+                      Container(
+                        width: 150,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                'https://ub-office.mn${data['data']['image_url']}',
+                              ),
+                              fit: BoxFit.cover),
+                        ),
+                        height: 150,
+                      ),
                     const SizedBox(
                       height: 30,
                     ),
@@ -122,7 +132,7 @@ class _UserScreenState extends State<UserScreen> {
                         topLeft: Radius.circular(0),
                         topRight: Radius.circular(0),
                       ),
-                      title: 'емайл',
+                      title: 'Имэйл',
                       icon: Icons.people,
                       seconIcon: Container(
                         decoration: BoxDecoration(
@@ -146,7 +156,7 @@ class _UserScreenState extends State<UserScreen> {
                         bottomLeft: Radius.circular(0),
                         bottomRight: Radius.circular(0),
                       ),
-                      title: 'Регистер',
+                      title: 'Регистр',
                       icon: Icons.note,
                       seconIcon: Container(
                         decoration: BoxDecoration(
@@ -221,52 +231,52 @@ class _UserScreenState extends State<UserScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => MyWidget(
-                                    emailController: emailController,
-                                    passwordController: passwordController,
-                                    firstNameController: firstNameController,
-                                    lastNameController: lastNameController,
-                                    phoneController: phoneNumberController,
-                                    registerController: registerController,
-                                    adressController: adressController,
-                                    onTap: () async {
-                                      bool response =
-                                          await repository.updatePage(
-                                        firstNameController.text,
-                                        lastNameController.text,
-                                        phoneNumberController.text,
-                                        emailController.text,
-                                        registerController.text,
-                                        adressController.text,
-                                        passwordController.text,
-                                        // 'assets/images/3.png' as Image,
-                                      );
-                                      if (response) {
-                                        Navigator.pop(context);
-                                        Globals.changeFirstName(
-                                            firstNameController.text);
-                                        Globals.changeAddress(
-                                          adressController.text,
-                                        );
-                                        Globals.changeGmail(
-                                          emailController.text,
-                                        );
-                                        Globals.changeUserPhone(
-                                          phoneNumberController.text,
-                                        );
-                                        Globals.changeRegister(
-                                          registerController.text,
-                                        );
-                                        Globals.changeLastName(
-                                          lastNameController.text,
-                                        );
-                                        setState(() {});
-                                      } else {
-                                        print(response);
-                                        // throw Exception('fail sda');
-                                      }
-                                    },
-                                  ),
+                                  builder: (_) => const UserEdit(
+                                      // emailController: emailController,
+                                      // passwordController: passwordController,
+                                      // firstNameController: firstNameController,
+                                      // lastNameController: lastNameController,
+                                      // phoneController: phoneNumberController,
+                                      // registerController: registerController,
+                                      // adressController: adressController,
+                                      // onTap: () async {
+                                      // bool response =
+                                      //     await repository.updatePage(
+                                      //   firstNameController.text,
+                                      //   lastNameController.text,
+                                      //   phoneNumberController.text,
+                                      //   emailController.text,
+                                      //   registerController.text,
+                                      //   adressController.text,
+                                      //   passwordController.text,
+                                      //   // 'assets/images/3.png' as Image,
+                                      // );
+                                      // if (response) {
+                                      //   Navigator.pop(context);
+                                      //   Globals.changeFirstName(
+                                      //       firstNameController.text);
+                                      //   Globals.changeAddress(
+                                      //     adressController.text,
+                                      //   );
+                                      //   Globals.changeGmail(
+                                      //     emailController.text,
+                                      //   );
+                                      //   Globals.changeUserPhone(
+                                      //     phoneNumberController.text,
+                                      //   );
+                                      //   Globals.changeRegister(
+                                      //     registerController.text,
+                                      //   );
+                                      //   Globals.changeLastName(
+                                      //     lastNameController.text,
+                                      //   );
+                                      //   setState(() {});
+                                      // } else {
+                                      //   print(response);
+                                      //   // throw Exception('fail sda');
+                                      // }
+                                      // },
+                                      ),
                                 ),
                               );
                             },
@@ -317,168 +327,6 @@ class _UserScreenState extends State<UserScreen> {
               );
             }
           },
-        ),
-      ),
-    );
-  }
-}
-
-class MyWidget extends StatelessWidget {
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-  final TextEditingController lastNameController;
-  final TextEditingController firstNameController;
-  final TextEditingController adressController;
-  final TextEditingController registerController;
-  final TextEditingController phoneController;
-  final VoidCallback onTap;
-
-  const MyWidget(
-      {super.key,
-      required this.onTap,
-      required this.emailController,
-      required this.passwordController,
-      required this.lastNameController,
-      required this.firstNameController,
-      required this.adressController,
-      required this.registerController,
-      required this.phoneController});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: firstNameController,
-            decoration: InputDecoration(hintText: '${Globals.firstname}'),
-          ),
-          TextField(
-            controller: lastNameController,
-            decoration: InputDecoration(hintText: '${Globals.lastname}'),
-          ),
-          TextField(
-            controller: registerController,
-            decoration: InputDecoration(hintText: '${Globals.register}'),
-          ),
-          TextField(
-            controller: emailController,
-            decoration: InputDecoration(hintText: '${Globals.gmail}'),
-          ),
-          TextField(
-            controller: phoneController,
-            decoration: InputDecoration(hintText: '${Globals.phone}'),
-          ),
-          TextField(
-            controller: adressController,
-            decoration: InputDecoration(hintText: '${Globals.address}'),
-          ),
-          TextFormField(
-            controller: passwordController,
-            decoration: const InputDecoration(hintText: 'нууц үг'),
-          ),
-          ElevatedButton(
-            onPressed: onTap,
-            child: const Text('submit'),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class CustomLine extends StatelessWidget {
-  const CustomLine({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Container(
-          height: 0.2,
-          color: const Color.fromARGB(255, 110, 110, 110),
-          width: MediaQuery.of(context).size.width * 0.78,
-        ),
-      ],
-    );
-  }
-}
-
-class CustomUserButton extends StatefulWidget {
-  final String text;
-  final VoidCallback onTap;
-  final BorderRadius radius;
-  final String title;
-  final IconData icon;
-  final Widget seconIcon;
-
-  const CustomUserButton({
-    super.key,
-    required this.text,
-    required this.onTap,
-    required this.radius,
-    required this.title,
-    required this.icon,
-    required this.seconIcon,
-  });
-
-  @override
-  State<CustomUserButton> createState() => _CustomUserButtonState();
-}
-
-class _CustomUserButtonState extends State<CustomUserButton> {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: widget.onTap,
-      child: Container(
-        decoration:
-            BoxDecoration(color: Colors.white, borderRadius: widget.radius),
-        height: MediaQuery.of(context).size.height * 0.07,
-        width: MediaQuery.of(context).size.width * 0.93,
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 7,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 5),
-                      child: Icon(
-                        widget.icon,
-                        color: const Color.fromARGB(255, 72, 72, 72),
-                      ),
-                    ),
-                    Text(
-                      widget.title,
-                      style: TextStyles.black13,
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 7,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 15.0),
-                      child: Text(
-                        widget.text,
-                        style: TextStyles.black13,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

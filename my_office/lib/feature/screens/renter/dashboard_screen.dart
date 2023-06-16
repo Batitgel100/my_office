@@ -181,22 +181,6 @@ class AllPayment extends StatelessWidget {
                   ),
                 ),
                 const TitleLine(),
-                Expanded(
-                  child: Container(
-                    child: const Column(
-                      children: [
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text('Үлдсэн', style: TextStyles.main17semibold),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text('1\'000\'000'),
-                      ],
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

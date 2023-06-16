@@ -83,6 +83,11 @@ class TextStyles {
     fontSize: 20,
     // fontWeight: FontWeight.w600,
   );
+  static const TextStyle black25 = TextStyle(
+    color: Colors.black,
+    fontSize: 25,
+    // fontWeight: FontWeight.w600,
+  );
   static const TextStyle white17 = TextStyle(
     color: Colors.white,
     fontSize: 17,
@@ -134,8 +139,8 @@ class TextStyles {
   );
   static const TextStyle black16semibold = TextStyle(
     color: Colors.black,
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
   );
   static const TextStyle black15semibold = TextStyle(
     color: Colors.black,

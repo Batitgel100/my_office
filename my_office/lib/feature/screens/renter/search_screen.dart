@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_office/feature/constants/theme.dart';
 import 'package:my_office/feature/model/room_model.dart';
-import 'package:my_office/feature/screens/renter/filter_screen.dart';
 import 'package:my_office/feature/screens/my_rooms/my_room_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -85,14 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     flex: 1,
                     child: Center(
                       child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const FilterScreen(),
-                            ),
-                          );
-                        },
+                        onTap: () {},
                         child: const Icon(
                           Icons.sort,
                           size: 40,
@@ -105,14 +97,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     flex: 1,
                     child: Center(
                       child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const FilterScreen(),
-                            ),
-                          );
-                        },
+                        onTap: () {},
                         child: const Icon(
                           Icons.tune,
                           size: 40,

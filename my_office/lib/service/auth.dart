@@ -80,6 +80,7 @@ class AuthViewModel with ChangeNotifier {
         var inRegister = '';
         var inEmail = '';
         var inAddress = '';
+        var inUserId = '';
         if (value['data']['firstname'] != null) {
           inFirstname = value['data']['firstname'];
         }
@@ -100,8 +101,12 @@ class AuthViewModel with ChangeNotifier {
         } else {
           inEmail = 'емайл оруулаагүй';
         }
+        if (value['data']['id'] != null) {
+          inUserId = value['data']['id'].toString();
+        }
 
         // Globals.changeGmail(inGmail);
+        Globals.changeUserId(inUserId);
 
         Globals.changeFirstName(inFirstname);
         Globals.changeAddress(inAddress);

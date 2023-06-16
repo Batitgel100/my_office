@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_office/feature/screens/owner/main_screen_owner.dart';
-import 'package:my_office/feature/screens/renter/main_screen.dart';
 import 'package:my_office/service/auth.dart';
 import 'package:my_office/feature/routes/routes.dart';
 import 'package:my_office/service/user_view_model.dart';
@@ -28,8 +26,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const MainScreenOwner(),
-        // initialRoute: RoutesName.splash,
+        // home: const MainScreenOwner(),
+        // home: const Tools(),
+
+        initialRoute: RoutesName.splash,
       ),
     );
   }

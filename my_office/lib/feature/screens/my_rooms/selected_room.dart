@@ -1,14 +1,44 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_office/feature/constants/theme.dart';
-import 'package:my_office/service/repositories.dart';
+import 'package:my_office/feature/screens/chat/model/tool_model.dart';
+import 'package:my_office/feature/screens/my_rooms/add_new_screen.dart';
+import 'package:my_office/feature/screens/my_rooms/room_info.dart';
+import 'package:http/http.dart' as http;
 
 bool isLoad = true;
 
 class SelectedRoom extends StatefulWidget {
+  final String buildingName;
+  final String doorNumber;
+  final String floor;
+  final String address;
+  final String wallHeight;
+  final String rentalFee;
+  final String totelRent;
+  final String owner;
+  final String ownerEmail;
+  final String ownerPhone;
+  final String status;
   final String barTitle;
-  final String roomId;
-  const SelectedRoom({super.key, required this.roomId, required this.barTitle});
+  final int roomId;
+  const SelectedRoom(
+      {super.key,
+      required this.roomId,
+      required this.barTitle,
+      required this.buildingName,
+      required this.doorNumber,
+      required this.floor,
+      required this.address,
+      required this.wallHeight,
+      required this.rentalFee,
+      required this.totelRent,
+      required this.owner,
+      required this.ownerEmail,
+      required this.ownerPhone,
+      required this.status});
 
   @override
   State<SelectedRoom> createState() => _SelectedRoomState();
@@ -16,60 +46,39 @@ class SelectedRoom extends StatefulWidget {
 
 class _SelectedRoomState extends State<SelectedRoom> {
   List<XFile> selectedImages = []; // List to store the selected images
-  late ImageRepository repository;
-  List<Map<String, dynamic>> _images = [];
-  bool _isLoading = false;
 
-  Future<void> pickImages() async {
-    List<XFile>? selectedFiles = await ImagePicker().pickMultiImage();
-    setState(() {
-      selectedImages = selectedFiles;
-      repository = ImageRepository();
-      fetchImages();
-    });
-  }
+  List<Tool> tools = [];
+  bool _isLoading = true;
 
   // List<dynamic> _data = [];
 
   @override
   void initState() {
-    repository = ImageRepository();
-    fetchImages();
+    fetchData();
     super.initState();
+
     // _getData();
   }
 
-  Future<void> fetchImages() async {
-    setState(() {
-      _isLoading = true;
-    });
-
+  Future<void> fetchData() async {
     try {
-      List<Map<String, dynamic>> images = await repository.fetchImages();
-      setState(() {
-        _images = images;
-      });
-    } catch (e) {
-      print('Error: $e');
-      // Handle the exception or display an error message
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      final response = await http.get(Uri.parse(
+          'https://ub-office.mn/mobile/room/tools/data/${widget.roomId}'));
+      print('Status Code: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as List<dynamic>;
+        setState(() {
+          _isLoading = false;
+          tools = jsonData.map((item) => Tool.fromJson(item)).toList();
+        });
+      } else {
+        print('Error: Failed to fetch data');
+      }
+    } catch (error) {
+      print('Exception occurred: $error');
     }
   }
-  // Future<void> _getData() async {
-  //   final response =
-  //       await http.get(Uri.parse('https://fakestoreapi.com/products'));
-  //   if (response.statusCode == 200) {
-  //     setState(() {
-  //       _data = json.decode(response.body);
-  //       isLoad = false;
-  //     });
-  //   } else {
-  //     throw Exception('Failed to load data');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -83,21 +92,43 @@ class _SelectedRoomState extends State<SelectedRoom> {
         width: MediaQuery.of(context).size.width,
         // height: 500,
         // color: Colors.red,
-        child: ListView(
+        child: Column(
           children: [
             const SizedBox(
-              height: 40,
+              height: 30,
             ),
             Center(
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.92,
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Өрөөний мэдээлэл', style: TextStyles.black17),
-                    Text(
-                      'Дэлгэрэнгүй',
-                      style: TextStyle(color: Colors.blue, fontSize: 14),
+                    const Text('Өрөөний мэдээлэл', style: TextStyles.black17),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => RoomInfoScreen(
+                              address: widget.address,
+                              buildingName: widget.buildingName,
+                              doorNumber: widget.doorNumber,
+                              floor: widget.floor,
+                              owner: widget.owner,
+                              ownerEmail: widget.ownerEmail,
+                              ownerPhone: widget.ownerPhone,
+                              rentalFee: widget.rentalFee,
+                              status: widget.status,
+                              totelRent: widget.totelRent,
+                              wallHeight: widget.wallHeight,
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Дэлгэрэнгүй',
+                        style: TextStyle(color: Colors.blue, fontSize: 14),
+                      ),
                     ),
                   ],
                 ),
@@ -114,41 +145,58 @@ class _SelectedRoomState extends State<SelectedRoom> {
                     // color: AppColors.mainColor,
                     border: Border.all(color: AppColors.mainColor, width: 5),
                     borderRadius: BorderRadius.circular(15)),
-                child: const Column(
+                child: Column(
                   children: [
                     MyRoomWidget(
                       text: 'Төлөв',
-                      text2: 'Түрээслэгдсэн',
+                      text2: widget.doorNumber,
                     ),
                     MyRoomWidget(
                       text: 'Барилгын нэр',
-                      text2: 'Union building',
+                      text2: widget.buildingName,
                     ),
                     MyRoomWidget(
-                      text: 'Тоот',
-                      text2: '804',
+                      text: 'Эзэмшигч',
+                      text2: widget.owner,
                     ),
                   ],
                 ),
               ),
             ),
             const SizedBox(
-              height: 0,
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 17.0, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [],
-              ),
+              height: 10,
             ),
             Center(
               child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.92,
-                child: const Row(
+                width: MediaQuery.of(context).size.width * 0.95,
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Зургууд', style: TextStyles.black17),
+                    const Text('Зургууд', style: TextStyles.black17),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => AddNewItem(
+                                      roomId: widget.roomId,
+                                    )));
+                      },
+                      child: Container(
+                        height: 50,
+                        width: 200,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: AppColors.greyBack),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Icon(Icons.add),
+                            Text('шинэ эд зүйл нэмэх'),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -158,180 +206,187 @@ class _SelectedRoomState extends State<SelectedRoom> {
             ),
             Padding(
               padding: const EdgeInsets.all(5.0),
-              child: Stack(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.7,
-                    decoration: BoxDecoration(
-                      color: AppColors.mainColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      const SizedBox(
-                        height: 5,
+              child: _isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.mainColor,
                       ),
-                      Center(
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.7,
-                          width: MediaQuery.of(context).size.width * 0.955,
-                          child: _isLoading
-                              ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : ListView.builder(
-                                  itemCount: _images.length,
-                                  itemBuilder: (context, index) {
-                                    final isFirstItem = index == 0;
-                                    final image = _images[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.all(0.0),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.15,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                1,
-                                            decoration: BoxDecoration(
-                                              // border: Border.all(
-                                              //     width: 0, color: AppColors.mainColor),
-                                              borderRadius: isFirstItem
-                                                  ? const BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(12),
-                                                      topRight:
-                                                          Radius.circular(12))
-                                                  : null,
-                                              color: const Color.fromARGB(
-                                                  255, 255, 255, 255),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    flex: 3,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(image['name'],
-                                                            style: TextStyles
-                                                                .black14semibold),
-                                                        Text(
-                                                            'Төрөл : ${image['description']}'),
-                                                        Text(
-                                                            'Тоо ширхэг : ${image['quantity']}'),
-                                                      ],
+                    )
+                  : Column(
+                      children: [
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Center(
+                          child: tools.isEmpty
+                              ? const Text('Эд хөрөнгө бүртгэгдээгүй байна')
+                              : SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.50,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.955,
+                                  child: ListView.builder(
+                                    itemCount: tools.length,
+                                    itemBuilder: (context, index) {
+                                      final isFirstItem = index == 0;
+                                      final image = tools[index];
+
+                                      return Padding(
+                                        padding: const EdgeInsets.all(0.0),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.15,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  1,
+                                              decoration: BoxDecoration(
+                                                // border: Border.all(
+                                                //     width: 0, color: AppColors.mainColor),
+                                                borderRadius: isFirstItem
+                                                    ? const BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(12),
+                                                        topRight:
+                                                            Radius.circular(12))
+                                                    : null,
+                                                color: const Color.fromARGB(
+                                                    255, 255, 255, 255),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 3,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(image.name,
+                                                              style: TextStyles
+                                                                  .black14semibold),
+                                                          Text(
+                                                              'Төрөл : ${image.description}'),
+                                                          Text(
+                                                              'Тоо ширхэг : ${image.quantity}'),
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 4,
-                                                    child: ListView.builder(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      itemCount: image.length,
-                                                      itemBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
-                                                        return Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
+                                                    Expanded(
+                                                      flex: 4,
+                                                      child:
+                                                          // picture == null
+                                                          //     ? const SizedBox()
+                                                          //     :
+                                                          ListView.builder(
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        itemCount:
+                                                            image.images.length,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          return Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            12),
+                                                              ),
+                                                              child: Image.network(
+                                                                  'https://ub-office.mn${image.images[index]}'),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 1,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                right: 10.0),
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            print(image.images
+                                                                .toString());
+                                                          },
+                                                          // pickImages,
                                                           child: Container(
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height *
+                                                                0.07,
                                                             decoration:
                                                                 BoxDecoration(
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
                                                                           12),
+                                                              color: AppColors
+                                                                  .greyBack,
                                                             ),
-                                                            child: Image.network(
-                                                                'https://ub-office.mn/${image['url']}'),
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 10.0),
-                                                      child: InkWell(
-                                                        onTap: pickImages,
-                                                        child: Container(
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .height *
-                                                              0.08,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12),
-                                                            color: AppColors
-                                                                .greyBack,
-                                                          ),
-                                                          child: const Center(
-                                                            child: Icon(
-                                                              Icons.add,
-                                                              size: 35,
-                                                              color:
-                                                                  Colors.black,
+                                                            child: const Center(
+                                                              child: Icon(
+                                                                Icons.edit,
+                                                                size: 25,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 1,
-                                                child: Container(
-                                                  height: 0.4,
-                                                  color: Colors.white,
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                    height: 0.4,
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
-                                              ),
-                                              Expanded(
-                                                flex: 4,
-                                                child: Container(
-                                                  height: 0.4,
-                                                  color: AppColors.mainColor,
+                                                Expanded(
+                                                  flex: 4,
+                                                  child: Container(
+                                                    height: 0.4,
+                                                    color: AppColors.mainColor,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  },
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                      ],
+                    ),
             ),
           ],
         ),

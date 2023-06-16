@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ImageRepository {
+  late final int userId;
   Future<List<Map<String, dynamic>>> fetchImages() async {
-    final url = Uri.parse('https://ub-office.mn/mobile/room/tools/data/47');
+    final url =
+        Uri.parse('https://ub-office.mn/mobile/room/tools/data/$userId');
 
     try {
       final response = await http.get(url);
@@ -13,9 +15,12 @@ class ImageRepository {
         final data = jsonDecode(response.body);
         List<Map<String, dynamic>> images =
             List<Map<String, dynamic>>.from(data);
+        print(response.body);
+
         print('success i');
         return images;
       } else {
+        print(response.body);
         throw Exception('Failed to fetch images');
       }
     } catch (e) {

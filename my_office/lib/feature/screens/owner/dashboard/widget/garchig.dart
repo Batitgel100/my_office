@@ -10,7 +10,7 @@ class Garchig extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.08,
+      height: MediaQuery.of(context).size.height * 0.065,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: const [

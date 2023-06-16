@@ -25,10 +25,14 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - sms_autofill (0.0.1):
+    - Flutter
   - Sodium (0.8.0)
   - Starscream (3.1.1)
   - Toast (4.0.0)
   - TweetNacl (1.0.2)
+  - url_launcher_ios (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -38,6 +42,8 @@ DEPENDENCIES:
   - pusher_channels_flutter (from `.symlinks/plugins/pusher_channels_flutter/ios`)
   - pusher_client (from `.symlinks/plugins/pusher_client/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - sms_autofill (from `.symlinks/plugins/sms_autofill/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -65,6 +71,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/pusher_client/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  sms_autofill:
+    :path: ".symlinks/plugins/sms_autofill/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
@@ -78,10 +88,12 @@ SPEC CHECKSUMS:
   PusherSwiftWithEncryption: e8626abf1067a7e1b06afde720934fe1872498e3
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
+  sms_autofill: c461043483362c3f1709ee76eaae6eb570b31686
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
+  url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
 PODFILE CHECKSUM: c18996a1973935e8fa6635f10f9b85f559aa6475
 

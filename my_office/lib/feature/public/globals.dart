@@ -1,80 +1,89 @@
 class Globals {
-  static var gmail;
+  static late String gmail;
 
-  static var id;
-  static var isLogin = false;
-  static var seasonId;
+  static late int id;
+  static bool isLogin = false;
+  static late int seasonId;
 
-  static var phone;
+  static late String phone;
 
-  static var firstname;
+  static late String firstname;
 
-  static var lastname;
-  static var register;
-  static var address;
-  static var password;
+  static late String lastname;
+  static late String register;
+  static late String address;
+  static late String password;
+  static late String userId;
 
-  static changeGmail(String a) {
+  static void changeGmail(String a) {
     gmail = a;
   }
 
-  static getgmail() {
+  static String getGmail() {
     return gmail;
   }
 
-  static changeRegister(String a) {
+  static void changeUserId(String a) {
+    userId = a;
+  }
+
+  static String getUserId() {
+    return userId;
+  }
+
+  static void changeRegister(String a) {
     register = a;
   }
 
-  static getRegister() {
+  static String getRegister() {
     return register;
   }
 
-  static changeAddress(String a) {
+  static void changeAddress(String a) {
     address = a;
   }
 
-  static getAddress() {
+  static String getAddress() {
     return address;
   }
 
-  static changePassword(String a) {
+  static void changePassword(String a) {
     password = a;
   }
 
-  static getPassword() {
+  static String getPassword() {
     return password;
   }
 
-  static changeUserPhone(String a) {
+  static void changeUserPhone(String a) {
     phone = a;
   }
 
-  static getUserPhone() {
+  static String getUserPhone() {
     return phone;
   }
 
-  static changeFirstName(String a) {
+  static void changeFirstName(String a) {
     firstname = a;
   }
 
-  static getFirstName() {
+  static String getFirstName() {
     return firstname;
   }
 
-  static changeLastName(String a) {
+  static void changeLastName(String a) {
     lastname = a;
   }
 
-  static getLastName() {
+  static String getLastName() {
     return lastname;
   }
 
-  static changeIsLogin(bool a) {
+  static void changeIsLogin(bool a) {
     isLogin = a;
   }
 
-  static getIsLogin() {
+  static bool getIsLogin() {
     return isLogin;
   }
 }
