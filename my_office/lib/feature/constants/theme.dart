@@ -38,6 +38,45 @@ class AppColors {
   );
 }
 
+class BoxShadows {
+  static const BoxShadow shadow = BoxShadow(
+    color: Color.fromARGB(136, 184, 183, 183),
+    blurRadius: 8.0,
+    spreadRadius: 1,
+    offset: Offset(
+      1.0, // Move to right 7.0 horizontally
+      1.0, // Move to bottom 8.0 Vertically
+    ),
+  );
+  static const BoxShadow shadow2 = BoxShadow(
+    color: Color.fromARGB(186, 184, 183, 183),
+    blurRadius: 6.0,
+    spreadRadius: 1,
+    offset: Offset(
+      0.0, // Move to right 7.0 horizontally
+      0.0, // Move to bottom 8.0 Vertically
+    ),
+  );
+  static const BoxShadow shadow3 = BoxShadow(
+    color: Color.fromARGB(255, 216, 223, 233),
+    blurRadius: 3.0,
+    spreadRadius: 3,
+    offset: Offset(
+      0.0, // Move to right 7.0 horizontally
+      3.0, // Move to bottom 8.0 Vertically
+    ),
+  );
+  static const BoxShadow shadow4 = BoxShadow(
+    color: Color.fromARGB(165, 216, 223, 233),
+    blurRadius: 5.0,
+    spreadRadius: 1,
+    offset: Offset(
+      0.0, // Move to right 7.0 horizontally
+      4.0, // Move to bottom 8.0 Vertically
+    ),
+  );
+}
+
 class TextStyles {
   static const TextStyle white17semibold = TextStyle(
     color: Colors.white,
@@ -120,6 +159,46 @@ class TextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
+  static const TextStyle grey15semibold = TextStyle(
+    color: Color.fromARGB(255, 114, 114, 114),
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle grey15 = TextStyle(
+    color: Color.fromARGB(255, 77, 76, 76),
+    fontSize: 15,
+    // fontWeight: FontWeight.w500,
+  );
+  static const TextStyle grey16semibold = TextStyle(
+    color: Color.fromARGB(255, 114, 114, 114),
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle grey17semibold = TextStyle(
+    color: Color.fromARGB(255, 114, 114, 114),
+    fontSize: 17,
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle grey18semibold = TextStyle(
+    color: Color.fromARGB(255, 114, 114, 114),
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle grey17 = TextStyle(
+    color: Color.fromARGB(255, 57, 57, 57),
+    fontSize: 17,
+    // fontWeight: FontWeight.w00,
+  );
+  static const TextStyle grey20semibold = TextStyle(
+    color: Color.fromARGB(255, 114, 114, 114),
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle greysemibold = TextStyle(
+    color: Color.fromARGB(255, 114, 114, 114),
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+  );
   static const TextStyle grey12semibold = TextStyle(
     color: Color.fromARGB(255, 114, 114, 114),
     fontSize: 12,
@@ -140,6 +219,11 @@ class TextStyles {
   static const TextStyle black16semibold = TextStyle(
     color: Colors.black,
     fontSize: 14,
+    fontWeight: FontWeight.w400,
+  );
+  static const TextStyle black16 = TextStyle(
+    color: Colors.black,
+    fontSize: 16,
     fontWeight: FontWeight.w400,
   );
   static const TextStyle black15semibold = TextStyle(

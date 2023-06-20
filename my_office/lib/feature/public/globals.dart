@@ -1,14 +1,10 @@
 class Globals {
   static late String gmail;
-
   static late int id;
   static bool isLogin = false;
   static late int seasonId;
-
   static late String phone;
-
   static late String firstname;
-
   static late String lastname;
   static late String register;
   static late String address;

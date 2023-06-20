@@ -1,84 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:otp_text_field/otp_text_field.dart';
-import 'package:otp_text_field/style.dart';
-import 'package:sms_autofill/sms_autofill.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
-class OTPScreen extends StatelessWidget {
-  const OTPScreen({super.key});
+class Pie extends StatefulWidget {
+  const Pie({super.key});
 
   @override
+  State<Pie> createState() => _PieState();
+}
+
+class _PieState extends State<Pie> {
+  @override
   Widget build(BuildContext context) {
+    final List<ChartData> chartData = [
+      ChartData('David', 25, const Color.fromRGBO(9, 0, 136, 1)),
+      ChartData('David', 2, const Color.fromARGB(255, 125, 125, 125)),
+    ];
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('OTP Screen'),
-      ),
-      body: Center(
-        child: OTPTextField(
-          length: 6, // Specify the length of the OTP code
-          width: MediaQuery.of(context).size.width,
-          fieldWidth: 50,
-          style: const TextStyle(fontSize: 17),
-          textFieldAlignment: MainAxisAlignment.spaceAround,
-          fieldStyle: FieldStyle.underline,
-          onCompleted: (pin) {
-            // This callback is triggered when the OTP code is entered completely
-            print("Entered OTP: $pin");
-            // You can perform further actions, such as validating the OTP
-          },
-        ),
-      ),
-    );
+        body: Center(
+            child: Container(
+                child: SfCircularChart(annotations: <CircularChartAnnotation>[
+      CircularChartAnnotation(
+          widget: Container(
+              child: PhysicalModel(
+                  shape: BoxShape.circle,
+                  elevation: 10,
+                  shadowColor: Colors.black,
+                  color: const Color.fromRGBO(230, 230, 230, 1),
+                  child: Container()))),
+      CircularChartAnnotation(
+          widget: Container(
+              child: const Text('5%',
+                  style: TextStyle(
+                      color: Color.fromRGBO(0, 0, 0, 0.5), fontSize: 25))))
+    ], series: <CircularSeries>[
+      DoughnutSeries<ChartData, String>(
+          dataSource: chartData,
+          xValueMapper: (ChartData data, _) => data.x,
+          yValueMapper: (ChartData data, _) => data.y,
+          innerRadius: '80%',
+          // Radius of doughnut
+          radius: '30%')
+    ]))));
   }
 }
 
-class OTPVerificationScreen extends StatefulWidget {
-  const OTPVerificationScreen({super.key});
-
-  @override
-  _OTPVerificationScreenState createState() => _OTPVerificationScreenState();
-}
-
-class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
-  String _otpCode = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _listenForOTP();
-  }
-
-  Future<void> _listenForOTP() async {
-    SmsAutoFill().listenForCode;
-    String code = await SmsAutoFill().getAppSignature;
-    setState(() {
-      _otpCode = code;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('OTP Verification'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Auto-filled OTP: $_otpCode',
-              style: const TextStyle(fontSize: 20),
-            ),
-            ElevatedButton(
-              child: const Text('Verify OTP'),
-              onPressed: () {
-                // Perform verification logic here
-                // Compare the entered OTP with the auto-filled OTP (_otpCode)
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+class ChartData {
+  ChartData(this.x, this.y, [this.color]);
+  final String x;
+  final double y;
+  final Color? color;
 }

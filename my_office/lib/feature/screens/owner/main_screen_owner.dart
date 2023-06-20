@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_office/feature/constants/theme.dart';
 import 'package:my_office/feature/screens/chat/chat_screen_ui.dart';
-import 'package:my_office/feature/screens/owner/dashboard/owner_dashboard_screen.dart';
 import 'package:my_office/feature/screens/my_rooms/my_room_screen.dart';
+import 'package:my_office/feature/screens/owner/dashboard/second_dashboard_screen.dart';
 
 import 'package:my_office/feature/screens/renter/user/user_screen.dart';
 
@@ -21,7 +21,7 @@ class _MainScreenOwnerState extends State<MainScreenOwner> {
 
   int _selectedIndex = 0;
   static final List<Widget> _pages = <Widget>[
-    const DashboardScreenOwner(),
+    const SecondDashboardScreen(),
     const MyRoomScreen(),
     const ChatScreenUI(),
     // const NotificationScreenOwner(),
