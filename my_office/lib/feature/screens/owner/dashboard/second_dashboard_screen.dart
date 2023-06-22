@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:my_office/feature/constants/theme.dart';
+import 'package:my_office/feature/model/room_model.dart';
+import 'package:my_office/feature/screens/my_rooms/my_room_screen.dart';
 import 'package:my_office/feature/screens/notification/owner_notif_screen.dart';
 import 'package:my_office/feature/screens/owner/dashboard/broker/broker_dashboard.dart';
 import 'package:my_office/feature/screens/owner/dashboard/dashboard_total_screen.dart';
 import 'package:my_office/feature/screens/owner/dashboard/rent/rent_dashboard.dart';
 import 'package:my_office/feature/screens/owner/dashboard/sell/sell_dashboard.dart';
+import 'package:http/http.dart' as http;
 
 bool seen = false;
 
@@ -17,7 +22,49 @@ class SecondDashboardScreen extends StatefulWidget {
 
 class _SecondDashboardScreenState extends State<SecondDashboardScreen>
     with TickerProviderStateMixin {
-  bool isLoading = false;
+  bool isLoading = true;
+
+  FetchRoomList fetchRoomList = FetchRoomList();
+  getGetRoomApi() async {
+    List<RoomModel> rooms = await fetchRoomList.getRoomList();
+    if (mounted) {
+      setState(() {
+        listRoom = rooms;
+        isLoading = false;
+      });
+    }
+  }
+
+  List<RoomModel> listRoom = [];
+
+  Map<String, dynamic> data = {};
+
+  Future<void> fetchData() async {
+    final response = await http.get(Uri.parse(
+        // 'https://ub-office.mn/mobile/lessor/dashbboard/data/${Globals.userId}')); // Replace with your server URL
+        'https://ub-office.mn/mobile/lessor/dashboard/data/9')); // Replace with your server URL
+
+    if (response.statusCode == 200) {
+      if (mounted) {
+        setState(() {
+          data = jsonDecode(response.body);
+          isLoading = false;
+        });
+      }
+    } else {
+      print('Failed to fetch data: ${response.statusCode}');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    fetchData();
+
+    getGetRoomApi();
+  }
+
   @override
   Widget build(BuildContext context) {
     TabController tabController = TabController(length: 4, vsync: this);
@@ -47,12 +94,32 @@ class _SecondDashboardScreenState extends State<SecondDashboardScreen>
                       // width: MediaQuery.of(context).size.width * 0.95,
                       child: TabBarView(
                         controller: tabController,
-                        children: const [
+                        children: [
                           // BrokerDashboardWidget(),
-                          CustomTotalDashboardWidget(),
-                          RentDashboardWidget(),
-                          SellDashboardWidget(),
-                          BrokerDashboardWidget(),
+                          CustomTotalDashboardWidget(
+                            totalYearly: data["totalYearly"] ?? 0,
+                            totalMonthly: data["totalMonthly"] ?? 0,
+                            brokerYearly: data["brokerYearly"] ?? 0,
+                            rentYearly: data["rentYearly"] ?? 0,
+                            sellYearly: data["sellYearly"] ?? 0,
+                            rentMonthly: data["rentMonthly"] ?? 0,
+                            brokerMonthly: data["brokerMonthly"] ?? 0,
+                            sellMonthly: data["sellMonthly"] ?? 0,
+                          ),
+
+                          RentDashboardWidget(
+                            rentYearly: data["rentYearly"] ?? 0,
+                            rentMonthly: data["rentMonthly"] ?? 0,
+                            roomRenting: data["roomRenting"] ?? 0,
+                            roomRentingArea: data["roomRentingArea"] ?? 0,
+                          ),
+                          const SellDashboardWidget(),
+                          BrokerDashboardWidget(
+                            brokerMonthly: data["brokerYearly"] ?? 0,
+                            brokerYearly: data["brokerYearly"] ?? 0,
+                            roomBrokering: data["brokerYearly"] ?? 0,
+                            roomBrokeringArea: data["brokerYearly"] ?? 0,
+                          ),
                         ],
                       ),
                     ),

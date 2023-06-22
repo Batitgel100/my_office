@@ -2,8 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:my_office/feature/constants/theme.dart';
 
 class CustomTotalDashboardWidget extends StatelessWidget {
+  final int rentMonthly;
+  final int totalYearly;
+
+  final int totalMonthly;
+  final int rentYearly;
+  final int sellYearly;
+  final int brokerYearly;
+  final int brokerMonthly;
+  final int sellMonthly;
   const CustomTotalDashboardWidget({
     super.key,
+    required this.rentMonthly,
+    required this.totalYearly,
+    required this.totalMonthly,
+    required this.rentYearly,
+    required this.sellYearly,
+    required this.brokerYearly,
+    required this.brokerMonthly,
+    required this.sellMonthly,
   });
 
   @override
@@ -26,11 +43,21 @@ class CustomTotalDashboardWidget extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              LeftSide(),
-              RightSide(),
+              LeftSide(
+                totalYearly: totalYearly,
+                brokerYearly: brokerYearly,
+                rentYearly: rentYearly,
+                sellYearly: sellYearly,
+              ),
+              RightSide(
+                rentMonthly: rentMonthly,
+                totalMonthly: totalMonthly,
+                brokerMonthly: brokerMonthly,
+                sellMonthly: sellMonthly,
+              ),
             ],
           ),
           const Padding(
@@ -60,8 +87,17 @@ class CustomTotalDashboardWidget extends StatelessWidget {
 }
 
 class LeftSide extends StatelessWidget {
+  final int totalYearly;
+  final int rentYearly;
+  final int sellYearly;
+  final int brokerYearly;
+
   const LeftSide({
     super.key,
+    required this.totalYearly,
+    required this.rentYearly,
+    required this.sellYearly,
+    required this.brokerYearly,
   });
 
   @override
@@ -74,29 +110,38 @@ class LeftSide extends StatelessWidget {
         color: AppColors.mainColor,
         // boxShadow: const [BoxShadows.shadow2],
       ),
-      child: const Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 00),
+            padding: const EdgeInsets.only(top: 00),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Жилийн нийт орлого',
                   style: TextStyles.white15semibold,
                 ),
                 Text(
-                  '₮2.1 сая',
+                  '₮$totalYearly сая',
                   style: TextStyles.white17semibold,
                 ),
               ],
             ),
           ),
-          TotalAndAllWithoutShadow(),
-          TotalAndAllWithoutShadow(),
-          TotalAndAllWithoutShadow(),
+          TotalAndAllWithoutShadow(
+            text: 'Түрээсийн',
+            totalRentAmountYear: rentYearly,
+          ),
+          TotalAndAllWithoutShadow(
+            text: 'Борлуулалтын',
+            totalRentAmountYear: sellYearly,
+          ),
+          TotalAndAllWithoutShadow(
+            text: 'Зуучлалын',
+            totalRentAmountYear: brokerYearly,
+          ),
         ],
       ),
     );
@@ -104,8 +149,17 @@ class LeftSide extends StatelessWidget {
 }
 
 class RightSide extends StatelessWidget {
+  final int totalMonthly;
+  final int rentMonthly;
+  final int brokerMonthly;
+  final int sellMonthly;
+
   const RightSide({
     super.key,
+    required this.rentMonthly,
+    required this.totalMonthly,
+    required this.brokerMonthly,
+    required this.sellMonthly,
   });
 
   @override
@@ -118,29 +172,38 @@ class RightSide extends StatelessWidget {
         color: AppColors.secondaryColor,
         // boxShadow: const [BoxShadows.shadow2],
       ),
-      child: const Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 5.0),
+            padding: const EdgeInsets.only(top: 5.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Сарын нийт орлого',
                   style: TextStyles.white16semibold,
                 ),
                 Text(
-                  '₮2.1 сая',
+                  '₮$totalMonthly сая',
                   style: TextStyles.white17semibold,
                 ),
               ],
             ),
           ),
-          TotalAndAllWithoutShadow(),
-          TotalAndAllWithoutShadow(),
-          TotalAndAllWithoutShadow(),
+          TotalAndAllWithoutShadow(
+            text: 'Түрээсийн',
+            totalRentAmountYear: rentMonthly,
+          ),
+          TotalAndAllWithoutShadow(
+            text: 'Борлуулалтын',
+            totalRentAmountYear: sellMonthly,
+          ),
+          TotalAndAllWithoutShadow(
+            text: 'Зуучлалын',
+            totalRentAmountYear: brokerMonthly,
+          ),
         ],
       ),
     );
@@ -210,54 +273,14 @@ class SpaceInformation extends StatelessWidget {
   }
 }
 
-class TotalAndAllWidget extends StatelessWidget {
-  const TotalAndAllWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: const [BoxShadows.shadow4],
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 15.0),
-              child: Icon(Icons.insert_chart_outlined),
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Түрээсийн',
-                  style: TextStyles.grey14semibold,
-                ),
-                Text(
-                  '₮2.1 сая',
-                  style: TextStyles.black17semibold,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class TotalAndAllWithoutShadow extends StatelessWidget {
+  final int totalRentAmountYear;
+  final String text;
+
   const TotalAndAllWithoutShadow({
     super.key,
+    required this.totalRentAmountYear,
+    required this.text,
   });
 
   @override
@@ -272,31 +295,32 @@ class TotalAndAllWithoutShadow extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             // boxShadow: const [BoxShadows.shadow4],
           ),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: 15.0),
+              const Expanded(
+                flex: 1,
                 child: Icon(
                   Icons.insert_chart_outlined,
                   size: 30,
                 ),
               ),
-              SizedBox(
-                width: 20,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Түрээсийн',
-                    style: TextStyles.grey14semibold,
-                  ),
-                  Text(
-                    '₮2.1 сая',
-                    style: TextStyles.black17semibold,
-                  ),
-                ],
+              Expanded(
+                flex: 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      text,
+                      style: TextStyles.grey14semibold,
+                    ),
+                    Text(
+                      '₮$totalRentAmountYear сая',
+                      style: TextStyles.black15semibold,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

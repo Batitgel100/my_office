@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -64,7 +65,6 @@ class _SelectedRoomState extends State<SelectedRoom> {
     try {
       final response = await http.get(Uri.parse(
           'https://ub-office.mn/mobile/room/tools/data/${widget.roomId}'));
-      print('Status Code: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body) as List<dynamic>;
@@ -73,16 +73,17 @@ class _SelectedRoomState extends State<SelectedRoom> {
           tools = jsonData.map((item) => Tool.fromJson(item)).toList();
         });
       } else {
-        print('Error: Failed to fetch data');
+        log('Error: Failed to fetch data');
       }
     } catch (error) {
-      print('Exception occurred: $error');
+      log('Exception occurred: $error');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60.0),
         child: SelectedRoomAppBar(widget: widget),
@@ -231,155 +232,9 @@ class _SelectedRoomState extends State<SelectedRoom> {
                                       final isFirstItem = index == 0;
                                       final image = tools[index];
 
-                                      return Padding(
-                                        padding: const EdgeInsets.all(0.0),
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.15,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  1,
-                                              decoration: BoxDecoration(
-                                                // border: Border.all(
-                                                //     width: 0, color: AppColors.mainColor),
-                                                borderRadius: isFirstItem
-                                                    ? const BorderRadius.only(
-                                                        topLeft:
-                                                            Radius.circular(12),
-                                                        topRight:
-                                                            Radius.circular(12))
-                                                    : null,
-                                                color: const Color.fromARGB(
-                                                    255, 255, 255, 255),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8.0),
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 3,
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceEvenly,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(image.name,
-                                                              style: TextStyles
-                                                                  .black14semibold),
-                                                          Text(
-                                                              'Төрөл : ${image.description}'),
-                                                          Text(
-                                                              'Тоо ширхэг : ${image.quantity}'),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 4,
-                                                      child:
-                                                          // picture == null
-                                                          //     ? const SizedBox()
-                                                          //     :
-                                                          ListView.builder(
-                                                        scrollDirection:
-                                                            Axis.horizontal,
-                                                        itemCount:
-                                                            image.images.length,
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          return Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: Container(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            12),
-                                                              ),
-                                                              child: Image.network(
-                                                                  'https://ub-office.mn${image.images[index]}'),
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 1,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                right: 10.0),
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            print(image.images
-                                                                .toString());
-                                                          },
-                                                          // pickImages,
-                                                          child: Container(
-                                                            height: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .height *
-                                                                0.07,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          12),
-                                                              color: AppColors
-                                                                  .greyBack,
-                                                            ),
-                                                            child: const Center(
-                                                              child: Icon(
-                                                                Icons.edit,
-                                                                size: 25,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: Container(
-                                                    height: 0.4,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 4,
-                                                  child: Container(
-                                                    height: 0.4,
-                                                    color: AppColors.mainColor,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
+                                      return ToolsWidget(
+                                        isFirstItem: isFirstItem,
+                                        image: image,
                                       );
                                     },
                                   ),
@@ -390,6 +245,206 @@ class _SelectedRoomState extends State<SelectedRoom> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ToolsWidget extends StatelessWidget {
+  const ToolsWidget({
+    super.key,
+    required this.isFirstItem,
+    required this.image,
+  });
+
+  final bool isFirstItem;
+  final Tool image;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(0.0),
+      child: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.23,
+            width: MediaQuery.of(context).size.width * 1,
+            decoration: BoxDecoration(
+              // border: Border.all(
+              //     width: 0, color: AppColors.mainColor),
+              borderRadius: isFirstItem
+                  ? const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12))
+                  : null,
+              color: const Color.fromARGB(255, 255, 255, 255),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Төрөл: ${image.name}',
+                              style: TextStyles.black17),
+                          Row(
+                            children: [
+                              Text('Тоо ширхэг : ${image.quantity}'),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text('Тэмдэглэл : ${image.description}'),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: AppColors.grey),
+                            child: const Icon(Icons.edit)),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    width: MediaQuery.of(context).size.width,
+                    child: image.images.isEmpty
+                        ? const Center(
+                            child: Text('Зураг оруулаагүй'),
+                          )
+                        : ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: image.images.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 3, color: AppColors.mainColor),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return Dialog(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12)),
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.5,
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    height: 60,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      color:
+                                                          AppColors.mainColor,
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(12),
+                                                        topRight:
+                                                            Radius.circular(12),
+                                                      ),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: const Icon(
+                                                            Icons.cancel,
+                                                            color:
+                                                                AppColors.white,
+                                                            size: 35,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 15,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.4,
+                                                    child: Image.network(
+                                                      'https://ub-office.mn${image.images[index]}',
+                                                      fit: BoxFit.contain,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Image.network(
+                                        'https://ub-office.mn${image.images[index]}'),
+                                  ),
+                                ),
+                              );
+                            }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  height: 0.4,
+                  color: Colors.white,
+                ),
+              ),
+              Expanded(
+                flex: 4,
+                child: Container(
+                  height: 0.4,
+                  color: AppColors.mainColor,
+                ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
@@ -498,6 +553,37 @@ class _MyRoomWidgetState extends State<MyRoomWidget> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ImageScreen extends StatelessWidget {
+  final String imageUrl;
+
+  const ImageScreen({super.key, required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: GestureDetector(
+          onTap: () {
+            // Show the image in a larger size
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return Dialog(
+                  child: Image.network(imageUrl),
+                );
+              },
+            );
+          },
+          child: Image.network(
+            imageUrl,
+          ),
+        ),
       ),
     );
   }

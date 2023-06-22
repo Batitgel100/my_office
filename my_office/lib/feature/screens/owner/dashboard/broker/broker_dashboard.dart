@@ -4,8 +4,16 @@ import 'package:my_office/feature/screens/owner/dashboard/dashboard_total_screen
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class BrokerDashboardWidget extends StatelessWidget {
+  final int brokerMonthly;
+  final int brokerYearly;
+  final int roomBrokering;
+  final int roomBrokeringArea;
   const BrokerDashboardWidget({
     super.key,
+    required this.brokerMonthly,
+    required this.brokerYearly,
+    required this.roomBrokering,
+    required this.roomBrokeringArea,
   });
 
   @override
@@ -21,7 +29,7 @@ class BrokerDashboardWidget extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(bottom: 8.0, left: 10),
                 child: Text(
-                  'Түрээсийн хянах самбар',
+                  'Зуучлалын хянах самбар',
                   style: TextStyles.black17,
                 ),
               ),
@@ -49,7 +57,7 @@ class BrokerDashboardWidget extends StatelessWidget {
                           const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Нийт түрээсийн орлого',
+                              Text('Нийт зуучлалын орлого',
                                   style: TextStyles.black14),
                               Text('1.1 сая \$',
                                   style: TextStyles.black17semibold),
@@ -101,7 +109,7 @@ class BrokerDashboardWidget extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Түрээслэж буй талбай:',
+                                'Зуучилж буй талбай:',
                                 style: TextStyles.black14,
                               ),
                               Text(
@@ -269,7 +277,7 @@ class BrokerDashboardWidget extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.all(10.0),
                 child: Text(
-                  'Түрээсийн талбайн мэдээлэл',
+                  'Зуучлалын талбайн мэдээлэл',
                   style: TextStyles.black17,
                 ),
               ),

@@ -21,7 +21,7 @@ class SellDashboardWidget extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(bottom: 8.0, left: 10),
                 child: Text(
-                  'Түрээсийн хянах самбар',
+                  'Борлуулалтын хянах самбар',
                   style: TextStyles.black17,
                 ),
               ),
@@ -49,10 +49,9 @@ class SellDashboardWidget extends StatelessWidget {
                           const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Нийт түрээсийн орлого',
+                              Text('Нийт борлуулалтын орлого',
                                   style: TextStyles.black14),
-                              Text('1.1 сая \$',
-                                  style: TextStyles.black17semibold),
+                              Text('сая \$', style: TextStyles.black17semibold),
                             ],
                           ),
                           CircularPercentIndicator(
@@ -73,7 +72,7 @@ class SellDashboardWidget extends StatelessWidget {
                                   style: TextStyles.black13,
                                 ),
                                 Text(
-                                  '40%',
+                                  '%',
                                   style: TextStyles.black22semibold,
                                 ),
                               ],
@@ -101,11 +100,11 @@ class SellDashboardWidget extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Түрээслэж буй талбай:',
+                                'борлуулж буй талбай:',
                                 style: TextStyles.black14,
                               ),
                               Text(
-                                '3',
+                                '',
                                 style: TextStyles.black14semibold,
                               ),
                             ],
@@ -269,7 +268,7 @@ class SellDashboardWidget extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.all(10.0),
                 child: Text(
-                  'Түрээсийн талбайн мэдээлэл',
+                  'Борлуулалтын талбайн мэдээлэл',
                   style: TextStyles.black17,
                 ),
               ),

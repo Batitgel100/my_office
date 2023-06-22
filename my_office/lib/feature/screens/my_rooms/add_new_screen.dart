@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -51,7 +52,6 @@ class _AddNewItemState extends State<AddNewItem> {
   }
 
   Future<void> sendListToServer() async {
-    print(widget.roomId);
     try {
       String serverUrl =
           'https://ub-office.mn/mobile/room/tool/store/${widget.roomId}'; // Replace with your server URL
@@ -78,17 +78,14 @@ class _AddNewItemState extends State<AddNewItem> {
         }),
       );
 
-      print('Response: ${response.body}');
-
       if (response.statusCode == 200) {
-        print('List sent to the server successfully.');
+        log('List sent to the server successfully.');
         Navigator.pop(context);
       } else {
-        print(
-            'Failed to send list to the server. Status code: ${response.statusCode}');
+        log('Failed to send list to the server. Status code: ${response.statusCode}');
       }
     } catch (error) {
-      print('Error sending list to the server: $error');
+      log('Error sending list to the server: $error');
     }
   }
 
